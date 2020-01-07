@@ -5,18 +5,18 @@ if (empty($_GET)) {
     die("No url providen");
 }
 
-set_time_limit(0);
-
 $url = $_GET['url'];
-
 $file = basename($url);
-if(!file_exists($file)) {
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    file_put_contents($file, $data);
-}
+
+$fp = fopen($file, 'w');
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_FILE, $fp);
+
+$data = curl_exec($ch);
+
+curl_close($ch);
+fclose($fp);
 
 header('Content-Description: File Transfer');
 header('Content-Type: application/octet-stream');
