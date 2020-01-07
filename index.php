@@ -67,6 +67,7 @@ $('form').on('submit', function (e) {
     exit;
 }
 
+<<<<<<< HEAD
 $url = !empty($_REQUEST["url"]) && preg_match("|^http(s)?://.+$|", stripslashes($_REQUEST["url"])) ?
     stripslashes($_REQUEST["url"]) : null;
 
@@ -151,6 +152,19 @@ if (!$url) {
 
 if ($success) {
     $success = rename($temp_file, get_file_path());
+=======
+set_time_limit(0);
+
+$url = $_GET['url'];
+
+$file = basename($url);
+if(!file_exists($file)) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    file_put_contents($file, $data);
+>>>>>>> parent of d3a1d98... Revert "Update index.php"
 }
 
 if ($success) {
