@@ -11,6 +11,8 @@ $file = basename($url);
 $fp = fopen($file, 'w');
 
 $ch = curl_init($url);
+curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'progress');
+curl_setopt($ch, CURLOPT_NOPROGRESS, false); // needed to make progress function work
 curl_setopt($ch, CURLOPT_FILE, $fp);
 
 $data = curl_exec($ch);
