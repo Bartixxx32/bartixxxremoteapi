@@ -12,22 +12,25 @@ $fp = fopen($file, 'w');
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_FILE, $fp);
-curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'callback');
-curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
-
+curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'progress');
+curl_setopt($ch, CURLOPT_NOPROGRESS, false); // needed to make progress function work
 
 $data = curl_exec($ch);
 
 curl_close($ch);
 
- function callback($download_size, $downloaded, $upload_size, $uploaded)
+function progress($resource,$download_size, $downloaded, $upload_size, $uploaded)
 {
-    $percent=$downloaded/$download_size;
-  // Do something with $percent
-  echo "$percent";      
+    if($download_size > 0)
+         echo $downloaded / $download_size  * 100;
+    ob_flush();
+    flush();
+    sleep(1); // just to see effect
 }
 
+echo "Done";
+ob_flush();
+flush();
 
 
 fclose($fp);
