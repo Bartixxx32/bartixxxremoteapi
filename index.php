@@ -1,5 +1,5 @@
 <?php
-set_time_limit(10000);
+set_time_limit(0);
 
 if (empty($_GET)) {
     die("No url providen");
@@ -11,13 +11,25 @@ $file = basename($url);
 $fp = fopen($file, 'w');
 
 $ch = curl_init($url);
-curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'progress');
-curl_setopt($ch, CURLOPT_NOPROGRESS, false); // needed to make progress function work
 curl_setopt($ch, CURLOPT_FILE, $fp);
+curl_setopt($ch, CURLOPT_NOPROGRESS, false);
+curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'callback');
+curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
+
 
 $data = curl_exec($ch);
 
 curl_close($ch);
+
+ function callback($download_size, $downloaded, $upload_size, $uploaded)
+{
+    $percent=$downloaded/$download_size;
+  // Do something with $percent
+  echo "$percent";      
+}
+
+
+
 fclose($fp);
 
 header('Content-Description: File Transfer');
