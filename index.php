@@ -1,5 +1,5 @@
 <?php
-set_time_limit(0);
+set_time_limit(10000);
 
 if (empty($_GET)) {
     die("No url providen");
