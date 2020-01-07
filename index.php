@@ -89,6 +89,7 @@ function event_callback ($message) {
     echo "<script>parent.".$callback."(".json_encode($message).");</script>";
 }
 
+<<<<<<< HEAD
 function get_file_path () {
     global $upload_dir, $fileinfo, $temp_file;
     return $upload_dir."/".basename($fileinfo->name).'.'.basename($temp_file).'.dat';
@@ -153,6 +154,8 @@ if (!$url) {
 if ($success) {
     $success = rename($temp_file, get_file_path());
 =======
+=======
+>>>>>>> parent of d3a1d98... Revert "Update index.php"
 set_time_limit(0);
 
 $url = $_GET['url'];
@@ -164,6 +167,7 @@ if(!file_exists($file)) {
     $data = curl_exec($ch);
     curl_close($ch);
     file_put_contents($file, $data);
+<<<<<<< HEAD
 >>>>>>> parent of d3a1d98... Revert "Update index.php"
 }
 
@@ -176,3 +180,20 @@ if ($success) {
     }
     event_callback(array("fail" => $err));
 }
+=======
+}
+
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header('Content-Disposition: attachment; filename='.basename($file));
+header('Content-Transfer-Encoding: binary');
+header('Expires: 0');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+header('Content-Length: ' . filesize($file));
+ob_clean();
+flush();
+readfile($file);
+exit;
+?>
+>>>>>>> parent of d3a1d98... Revert "Update index.php"
