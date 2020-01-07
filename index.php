@@ -154,7 +154,7 @@ if ($success) {
         header("Content-Disposition: attachment; filename=".$fileName);
         ob_clean();
         flush();
-        readfile ($filePath);
+        readfile($filePath);
     }
         else {
             die('The provided file path is not valid.');
