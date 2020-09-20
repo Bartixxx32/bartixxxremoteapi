@@ -1,78 +1,61 @@
-<?php
-ini_set('display_errors', '0');
-
-function get_header($url,$header) {
-    $my_ch = curl_init();
-    curl_setopt($my_ch, CURLOPT_URL,$url);
-    curl_setopt($my_ch, CURLOPT_HTTPHEADER,$header);
-    curl_setopt($my_ch, CURLOPT_HEADER, true);
-    curl_setopt($my_ch, CURLOPT_NOBODY, true);
-    curl_setopt($my_ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($my_ch, CURLOPT_TIMEOUT, 10);
-    return curl_exec($my_ch);
-}
-
-$data_file = "https://anime.bartixxx.workers.dev/Ogladam/Love%20Comedy/Yahari%20Ore%20no%20Seishun%20Love%20Comedy%20wa%20Machigatteiru%20OVA.mp4";
-$filename = 'file.mp4';
-
-if(isset($_SERVER['HTTP_RANGE']) || isset($HTTP_SERVER_VARS['HTTP_RANGE'])) {
-
-    $my_header = getallheaders();
-
-    $i = 0;
-    foreach($my_header as $key => $value)
-        $header_curl[$i++]= $key.': '.$value;
-
-    $header_read = null;
-    foreach($my_header as $key => $value)
-        $header_read .= $key.': '.$value."\r\n";
-
-    $recieved_header = get_header($data_file,$header_curl);
-
-    $recieved_header = explode("\r\n", $recieved_header);
-    foreach($recieved_header as $value)
-        header($value);
-
-    while (!(connection_aborted() || connection_status() == 1)) {
-        $ctx = stream_context_create(
-                                    array(
-                                        'http'=> $header_read
-                                    )
-                );
-
-        readfile($data_file, false, $ctx);
-    }
-}
-else{
-    header('Accept-Ranges: bytes');
-    header("Content-Description: File Transfer");
-    header("Content-Type: application/otect-stream");
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
-
-    $my_header = getallheaders();
-
-    $header_read = null;
-    foreach($my_header as $key => $value)
-        $header_read .= $key.': '.$value."\r\n";
-
-    $i = 0;
-    foreach($my_header as $key => $value)
-        $header_curl[$i++]= $key.': '.$value;
-
-    $recieved_header = get_header($data_file,$header_curl);
-
-    $recieved_header = explode("\r\n", $recieved_header);
-    foreach($recieved_header as $value)
-        header($value);
-
-    while (!(connection_aborted() || connection_status() == 1)) {
-        $ctx = stream_context_create(
-                                    array(
-                                        'http'=> $header_read
-                                    )
-                );
-        readfile($data_file, false, $ctx);
-    }
-}
-
-exit;
+<html>
+    <head>
+        <title>PHP File Upload From URL</title>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $("#1").hide();
+        });
+        function uploadfile()
+        {
+            var sds = document.getElementById("dum");
+            if(sds == null){
+            alert("You are using a free package.\n You are not allowed to remove the copyright.\n");
+        }
+        var sdss = document.getElementById("dumdiv");
+        if(sdss == null){
+            alert("You are using a free package.\n You are not allowed to remove the copyright.\n");
+        }
+        if(sdss != null)
+        { 
+            $("#1").show();
+            $("#disp").html("");
+            var url = encodeURIComponent($("#url").val());
+            $.ajax({
+                url: "upload.php",
+                data: "url=" +url,
+                type: 'post',
+                success: function(data)
+                {
+                    var findsucc = data.indexOf("successfully");
+                    out=data.split('**$$**');
+                    if(findsucc!=-1)
+                    {
+                        $("#disp").css({"color": "green"});
+                        $("#disp").html(out[0]);
+                        $("#link").html("<a href='./upload/"+out[1]+"'>Click here</a> to view");
+                        $("#1").hide();
+                    }
+                    else
+                    {
+                        $("#1").hide();
+                        $("#disp").css({"color": "red"});
+                        $("#disp").html(data);
+                        $("#url").val("");
+                    }
+                }
+            });
+        }
+        }
+        </script>
+    </head>
+<body>
+<div align='center' style='padding-top: 40px;color: #4e4e4e;'><h1>PHP File Upload From URL</h1></div>
+<div align='center' style='padding-top: 30px;'>
+Enter Remote URL: <input type="text" name="url" id='url' size="35"> <input type="submit" value="Upload" name="submit" style='cursor: pointer;' onclick='uploadfile()'>&nbsp;&nbsp;<img src='ajax-loader.gif' id='1'>&nbsp;&nbsp;<br /><br /><div align='center'><span id='disp'></span></div><br>
+<div id='link'></div><br />
+<div style=" padding-left: 20px;font-size: 10px;color: #dadada;" id="dumdiv">
+<a href="http://www.hscripts.com" id="dum" style="padding-right:0px; text-decoration:none;color: green;">&copy;h</a></div>
+</div>
+</body>
+</html>
